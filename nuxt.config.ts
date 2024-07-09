@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vite-pwa/nuxt',
   ],
+  css: [
+    '@/global.css'
+  ],
   runtimeConfig: {
     public: {
       bucketUrl: process.env.BUCKET_URL
