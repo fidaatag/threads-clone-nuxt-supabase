@@ -17,5 +17,5 @@ export default defineNuxtConfig({
       bucketUrl: process.env.BUCKET_URL
     }
   },
-  devtools: { enabled: true }
+  devtools: { enabled: false }
 })
