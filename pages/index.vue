@@ -6,10 +6,7 @@
           <!-- looping here -->
           <div v-if="isPosts" v-for="post in posts" :key="post">
             <!-- {{ post }} -->
-            <Post :post="post" @isDeleted="posts = []" />
-            <Post :post="post" @isDeleted="posts = []" />
-            <Post :post="post" @isDeleted="posts = []" />
-            <Post :post="post" @isDeleted="posts = []" />
+            <Post :post="post" @isDeleted="posts = userStore.getAllPosts()" />
           </div>
           <div v-else>
             <ClientOnly >

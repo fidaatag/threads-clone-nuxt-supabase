@@ -24,6 +24,7 @@
 
           <div v-if="isMenu" class="absolute border border-gray-600 right-0 z-20 mt-1 rounded">
             <button
+              @click="deletePost(post.id, post.picture)"
               class="flex items-center rounded gap-2 text-red-500 justify-between bg-black w-full pl-4 pr-3 py-1 hover:bg-gray-900"
             >
               <div>Delete</div>
@@ -50,25 +51,28 @@
           <div class="absolute mt-2 w-full ml-2">
             <button
               :disabled="isLike"
+              @click="likesFunc()"
               class="flex items-center gap-1"
             >
               <Icon
+                v-if="!hasLikedComputed"
                 class="p-1 text-white hover:bg-gray-800 rounded-full cursor-pointer"
                 name="mdi:cards-heart-outline"
                 size="28"
               />
-              <!-- <Icon
+              <Icon
+                v-else
                 class="p-1 text-red-500 hover:bg-gray-800 rounded-full cursor-pointer"
                 name="mdi:cards-heart"
                 size="28"
-              /> -->
+              />
             </button>
             <div class="relative text-sm text-gray-500">
               <div>
-                <span>4</span>
-                <!-- <span>
+                <span v-if="!isLike">{{ post.likes.length }}</span>
+                <span v-else>
                   <Icon name="eos-icons:bubble-loading" size="13" color="#ffffff"/>
-                </span> -->
+                </span>
                 likes
               </div>
             </div>
@@ -111,4 +115,96 @@
 
   const client = useSupabaseClient()
   const user = useSupabaseUser()
+
+  const hasLikedComputed = computed(() => {
+    if (!user.value) return
+    let res = false
+    props.post.likes.forEach(like => {
+      if (like.userId == user.value.identities[0].user_id && like.postId == props.post.id) {
+        res = true
+      }
+    });
+
+    return res
+  })
+
+  const deletePost = async (id, picture) => {
+    let res = confirm('Are you sure you want to delete this post?')
+
+    if (!res) return
+
+    try {
+      isMenu.value = false
+      isDeleting.value = true
+      const { data, error } = await client
+        .storage
+        .from('threads-c-files')
+        .remove([picture])
+
+      await useFetch(`/api/delete-post/${id}`, { method: 'DELETE' })
+      emit('isDeleted', true)
+
+      isDeleting.value = false
+
+    } catch (error) {
+      console.log(error)
+      isDeleting.value = false
+    } 
+  }
+
+  const likePost = async (id) => {
+    isLike.value = true
+    try {
+      await useFetch('/api/like-post', {
+        method: 'POST',
+        body: {
+          userId: user.value.identities[0].user_id,
+          postId: id,
+        }
+      })
+
+      await userStore.getAllPosts()
+      isLike.value = false
+
+    } catch (error) {
+      console.log(error)
+      isLike.value = false
+    }
+  }
+
+  const unlikePost = async (id) => {
+    isLike.value = true
+    try {
+      await useFetch(`/api/unlike-post/${id}`, { method: 'DELETE' })
+      await userStore.getAllPosts()
+      isLike.value = false
+
+    } catch (error) {
+      console.log(error)
+      isLike.value = false
+    }
+  }
+
+  const likesFunc = () => {
+    let likePostObj = null
+
+    if (props.post.likes.length < 1) {
+      likePost(props.post.id)
+      return null
+
+    } else {
+      props.post.likes.forEach(like => {
+        if (like.userId == user.value.identities[0].user_id && like.postId == props.post.id) {
+          likePostObj = like
+        }
+      });
+    }
+
+    if (likePostObj) {
+      unlikePost(likePostObj.id)
+      return null
+    }
+
+    likePost(props.post.id)
+  }
 </script>
