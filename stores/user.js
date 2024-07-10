@@ -6,4 +6,12 @@ export const useUserStore = defineStore('user', {
     isMenuOverlay: false,
     isLogoutOverlay: false,
   }),
+
+  actions: {
+    async getAllPosts() {
+      let res = await useFetch('/api/get-all-post')
+      this.posts = res.data
+      return res.data
+    }
+  }
 })

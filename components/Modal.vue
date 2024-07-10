@@ -26,11 +26,11 @@
 <script setup>
   import { useUserStore } from '~/stores/user';
   const userStore = useUserStore()
-  // const client = useSupabaseClient()
+  const client = useSupabaseClient()
 
-  // const logout = () => {
-  //   client.auth.signOut()
-  //   userStore.isLogoutOverlay = false
-  //   return navigateTo('/')
-  // }
+  const logout = () => {
+    client.auth.signOut()
+    userStore.isLogoutOverlay = false
+    return navigateTo('/')
+  }
 </script>
