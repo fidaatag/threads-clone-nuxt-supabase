@@ -120,4 +120,55 @@
     fileData.value = file.value.files[0]
   }
 
+  const createPost = async () => {
+    let dataOut = null;
+    let errorOut = null;
+
+    isLoading.value = true
+    
+    if (fileData.value) {
+      const { data, error } = await client
+        .storage
+        .from('threads-c-files')
+        .upload(`${uuidv4()}.jpg`, fileData.value)
+
+      dataOut = data;
+      errorOut = error;
+    }
+
+    if (errorOut) {
+      console.log(errorOut)
+      return errorOut
+    }
+
+    let pic = ''
+
+    if (dataOut) {
+      pic = dataOut.path ? dataOut.path : ''
+    }
+
+    try {
+      await useFetch('/api/create-post', {
+        method: 'POST',
+        body: {
+          userId: user.value.identities[0].user_id,
+          name: user.value.identities[0].identity_data.full_name,
+          image: user.value.identities[0].identity_data.avatar_url,
+          text: text.value,
+          picture: pic,
+        }
+      })
+
+      await userStore.getAllPosts()
+      userStore.isMenuOverlay = false
+
+      clearData()
+      isLoading.value = false
+
+    } catch (error) {
+      console.log(error)
+      isLoading.value = false
+    }
+  }
+
 </script>
