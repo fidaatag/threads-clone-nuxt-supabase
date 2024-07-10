@@ -25,19 +25,22 @@
 
 <script setup>
 
-// watchEffect(() => {
-//   if (user.value) {
-//     return navigateTo('/')
-//   }
-// })
+const client = useSupabaseClient()
+const user = useSupabaseUser()
 
-// const login = async (prov) => {
-//   const { data, error } = await client.auth.signInWith0Auth({
-//     provider: prov.
-//     redirectTo: window.location.origin
-//   })
+watchEffect(() => {
+  if (user.value) {
+    return navigateTo('/')
+  }
+})
 
-//   if (error) console.log(error)
-// }
+const login = async (prov) => {
+  const { data, error } = await client.auth.signInWithOAuth({
+    provider: prov,
+    redirectTo: window.location.origin
+  })
+
+  if (error) console.log(error)
+}
 
 </script>
