@@ -10,6 +10,7 @@
         <div class="text-center mb-6 mt-4">Login / Register</div>
 
         <button
+          @click="login('github')"
           class="flex items-center justify-center gap-3 p-1.5 w-full border rounded-full text-lg font-semibold"
         >
           <div class="flex items-center gap-2 justify-center">

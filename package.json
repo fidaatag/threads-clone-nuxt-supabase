@@ -15,11 +15,15 @@
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.16.1",
     "@vite-pwa/nuxt": "^0.9.1",
-    "nuxt": "^3.12.3",
     "nuxt-icon": "^0.4.2",
     "pinia": "^2.1.7",
     "prisma": "^5.16.1",
     "uuid": "^10.0.0",
     "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@types/node": "^18.16.19",
+    "nuxt": "^3.12.3"
   }
 }
