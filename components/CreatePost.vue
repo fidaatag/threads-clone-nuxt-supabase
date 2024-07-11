@@ -129,7 +129,7 @@
     if (fileData.value) {
       const { data, error } = await client
         .storage
-        .from('threads-c-files')
+        .from('threads-clone-bucker')
         .upload(`${uuidv4()}.jpg`, fileData.value)
 
       dataOut = data;

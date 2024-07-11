@@ -45,7 +45,7 @@
           <img
             v-if="post && post.picture"
             class="mx-auto w-full mt-2 pr-2 rounded"
-            :src="runtimeConfig.public.bucketUrl + post.picture"
+            :src="`${runtimeConfig.public.bucketUrl}/` + post.picture"
           />
 
           <div class="absolute mt-2 w-full ml-2">
@@ -138,7 +138,7 @@
       isDeleting.value = true
       const { data, error } = await client
         .storage
-        .from('threads-c-files')
+        .from('threads-clone-bucker')
         .remove([picture])
 
       await useFetch(`/api/delete-post/${id}`, { method: 'DELETE' })
